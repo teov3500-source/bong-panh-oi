@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bống ❤️ Phương Anh</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#ffe5ef,#f0e3ff);
+    color:#451d36;
+    overflow:hidden;
+}
+
+header{
+    text-align:center;
+    padding:20px;
+    background:#ffffffaa;
+}
+
+h1{
+    margin:0;
+    font-size:40px;
+}
+
+.subtitle{
+    margin:8px;
+    color:#80506d;
+}
+
+#score{
+    font-size:24px;
+    font-weight:bold;
+}
+
+#scene{
+    position:relative;
+    width:94%;
+    max-width:1000px;
+    height:600px;
+    margin:20px auto;
+    border-radius:30px;
+    background:#ffffff80;
+    box-shadow:0 15px 50px #74264a22;
+    overflow:hidden;
+}
+
+.character{
+    position:absolute;
+    bottom:30px;
+    width:250px;
+    text-align:center;
+}
+
+.phuong{
+    left:7%;
+}
+
+.bong{
+    right:7%;
+}
+
+.avatar{
+    width:150px;
+    height:150px;
+    margin:auto;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:70px;
+    box-shadow:0 10px 25px #50143c22;
+}
+
+.name{
+    font-size:25px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.desc{
+    opacity:.7;
+    margin:5px;
+}
+
+button{
+    border:0;
+    border-radius:18px;
+    padding:14px 28px;
+    font-size:18px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+    background:linear-gradient(135deg,#ff4f87,#b45cff);
+    box-shadow:0 7px 18px #be3c8248;
+}
+
+button:active{
+    transform:scale(.94);
+}
+
+#message{
+    position:absolute;
+    left:50%;
+    top:35%;
+    transform:translate(-50%,-50%);
+    background:#ffffffdd;
+    padding:20px 28px;
+    border-radius:22px;
+    font-size:25px;
+    font-weight:bold;
+    text-align:center;
+    z-index:5;
+}
+
+#loveLevel{
+    position:absolute;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+    background:white;
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:bold;
+}
+
+.heart{
+    position:absolute;
+    font-size:35px;
+    pointer-events:none;
+    z-index:10;
+    animation:fly 1.4s ease-out forwards;
+}
+
+@keyframes fly{
+    0%{
+        opacity:1;
+        transform:translate(0,0) scale(.5);
+    }
+
+    70%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:0;
+        transform:
+        translate(var(--x),var(--y))
+        scale(1.5)
+        rotate(var(--r));
+    }
+}
+
+@media(max-width:700px){
+
+    h1{
+        font-size:27px;
+    }
+
+    #scene{
+        height:520px;
+    }
+
+    .character{
+        width:42%;
+    }
+
+    .avatar{
+        width:110px;
+        height:110px;
+        font-size:52px;
+    }
+
+    .name{
+        font-size:20px;
+    }
+
+    #message{
+        font-size:18px;
+        width:70%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>💗 BỐNG ❤️ PHƯƠNG ANH 💗</h1>
+
+<div class="subtitle">
+Mỗi lần click = một lần Bống thả tim cho Phương Anh 💕
+</div>
+
+<div id="score">
+💖 Tim đã thả: <span id="count">0</span>
+</div>
+
+</header>
+
+
+<div id="scene">
+
+<div id="loveLevel">
+💞 Tình cảm: <span id="level">0</span>
+</div>
+
+
+<div id="message">
+Bấm nút bên Bống để thả tim! 💕
+</div>
+
+
+<div class="character phuong">
+
+<div class="avatar">
+🌸
+</div>
+
+<div class="name">
+Phương Anh
+</div>
+
+<div class="desc">
+Người nhận tim 💗
+</div>
+
+</div>
+
+
+<div class="character bong">
+
+<div class="avatar">
+🐻
+</div>
+
+<div class="name">
+Bống
+</div>
+
+<div class="desc">
+Người thả tim 💕
+</div>
+
+<button id="heartBtn">
+💗 THẢ TIM
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+let count = 0;
+
+const scene = document.getElementById("scene");
+const countText = document.getElementById("count");
+const levelText = document.getElementById("level");
+const message = document.getElementById("message");
+const button = document.getElementById("heartBtn");
+
+
+const messages = [
+
+"Bống vừa thả tim cho Phương Anh! 💗",
+
+"Một trái tim nữa nè! 💕",
+
+"Phương Anh nhận được tim rồi! 💖",
+
+"Bống tiếp tục thả tim! 💘",
+
+"Tim bay tới Phương Anh! 💞",
+
+"💗 Bống lại thả tim 💗"
+
+];
+
+
+function playSound(){
+
+    try{
+
+        const audio =
+        new (window.AudioContext ||
+        window.webkitAudioContext)();
+
+        const oscillator =
+        audio.createOscillator();
+
+        const gain =
+        audio.createGain();
+
+        oscillator.type = "sine";
+
+        oscillator.frequency.value = 650;
+
+        gain.gain.setValueAtTime(
+            0.08,
+            audio.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audio.currentTime + 0.18
+        );
+
+        oscillator.connect(gain);
+
+        gain.connect(audio.destination);
+
+        oscillator.start();
+
+        oscillator.stop(
+            audio.currentTime + 0.18
+        );
+
+    }catch(e){}
+
+}
+
+
+button.onclick = function(){
+
+    count++;
+
+    countText.textContent = count;
+
+    levelText.textContent =
+        Math.floor(count / 5);
+
+
+    message.textContent =
+        messages[(count - 1) % messages.length];
+
+
+    message.animate(
+
+        [
+            {
+                transform:
+                "translate(-50%,-50%) scale(1)"
+            },
+
+            {
+                transform:
+                "translate(-50%,-50%) scale(1.1)"
+            },
+
+            {
+                transform:
+                "translate(-50%,-50%) scale(1)"
+            }
+        ],
+
+        {
+            duration:250
+        }
+
+    );
+
+
+    playSound();
+
+
+    for(let i=0;i<5;i++){
+
+        const heart =
+        document.createElement("div");
+
+        heart.className = "heart";
+
+        heart.textContent =
+        ["❤️","💗","💕","💖"]
+        [Math.floor(Math.random()*4)];
+
+
+        heart.style.left =
+        (
+            scene.clientWidth * 0.70
+            + Math.random()*60
+            - 30
+        ) + "px";
+
+
+        heart.style.top =
+        (
+            scene.clientHeight * 0.58
+            + Math.random()*30
+        ) + "px";
+
+
+        heart.style.setProperty(
+            "--x",
+            (Math.random()*260-130)+"px"
+        );
+
+
+        heart.style.setProperty(
+            "--y",
+            (-180-Math.random()*220)+"px"
+        );
+
+
+        heart.style.setProperty(
+            "--r",
+            (Math.random()*80-40)+"deg"
+        );
+
+
+        scene.appendChild(heart);
+
+
+        setTimeout(
+            ()=>heart.remove(),
+            1500
+        );
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>
